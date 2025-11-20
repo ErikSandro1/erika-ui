@@ -1,76 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <title>Erika IA</title>
-    <style>
-        body {
-            background: #111;
-            color: white;
-            font-family: Arial;
-            padding: 20px;
-        }
-        #chat {
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            margin-top: 10px;
-            font-size: 16px;
-        }
-        .msg {
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 6px;
-        }
-        .user {
-            background: #444;
-        }
-        .erika {
-            background: #1e90ff;
-        }
-    </style>
+<meta charset="UTF-8" />
+<title>Erika IA – Interface Oficial</title>
+<style>
+    body {
+        background: #111;
+        color: white;
+        font-family: Arial;
+        padding: 20px;
+    }
+
+    #chat {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .msg-user {
+        text-align: right;
+        color: #9cf;
+    }
+
+    .msg-erika {
+        text-align: left;
+        color: #f9c;
+    }
+
+    input {
+        width: 100%;
+        max-width: 600px;
+        padding: 12px;
+        border-radius: 6px;
+        border: none;
+        margin-top: 10px;
+    }
+
+    button {
+        padding: 12px 20px;
+        background: #ff4bcd;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+</style>
 </head>
+
 <body>
+    <h1>💜 Erika IA – Interface Oficial</h1>
 
-<h2>💜 Conversar com a ERIKA</h2>
+    <div id="chat"></div>
 
-<div id="chat"></div>
-
-<input id="msg" placeholder="Digite sua mensagem..." />
+    <input id="input" placeholder="Digite sua pergunta..." />
+    <button onclick="enviar()">Enviar</button>
 
 <script>
-const API_URL = "https://erika-core-322004656162.us-central1.run.app/erika";
+    const API_URL = "https://erika-core-322004656162.us-central1.run.app/erika"; 
 
-document.getElementById("msg").addEventListener("keydown", async (e) => {
-    if (e.key === "Enter") {
-        let q = e.target.value.trim();
-        if (!q) return;
+    async function enviar() {
+        const pergunta = document.getElementById("input").value;
+        if (!pergunta) return;
 
-        // Mostrar mensagem do usuário
-        addMsg("Você", q, "user");
-        e.target.value = "";
+        // Mostra sua mensagem
+        document.getElementById("chat").innerHTML += `<div class="msg-user"><b>Você:</b> ${pergunta}</div>`;
+        document.getElementById("input").value = "";
 
-        // Mandar para a ERIKA API
-        let url = API_URL + "?q=" + encodeURIComponent(q);
-        let resp = await fetch(url);
-        let data = await resp.json();
+        try {
+            const resposta = await fetch(API_URL + "?q=" + encodeURIComponent(pergunta));
+            const data = await resposta.json();
 
-        addMsg("Erika", data.erika_answer, "erika");
+            // Mostra resposta da Erika
+            document.getElementById("chat").innerHTML += `<div class="msg-erika"><b>Erika:</b> ${data.erika_answer}</div>`;
+
+        } catch (e) {
+            document.getElementById("chat").innerHTML += `<div class="msg-erika">⚠️ Erro ao conectar com a Erika!</div>`;
+        }
     }
-});
-
-function addMsg(name, text, cls) {
-    let div = document.createElement("div");
-    div.className = "msg " + cls;
-    div.innerHTML = `<b>${name}:</b> ${text}`;
-    document.getElementById("chat").appendChild(div);
-}
 </script>
 
 </body>
