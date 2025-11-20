@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERIKA Interface</title>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    h1 {
+      color: #ff4dd2;
+    }
+    #chat {
+      margin-top: 20px;
+      padding: 10px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      max-width: 600px;
+    }
+    #inputBox {
+      width: 300px;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      padding: 10px 20px;
+      background: #ff4dd2;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✨ Erika UI — Converse com sua IA</h1>
+
+  <div id="chat"></div>
+
+  <input id="inputBox" placeholder="Digite algo..." />
+  <button onclick="sendMessage()">Enviar</button>
+
+  <script>
+    async function sendMessage() {
+      const msg = document.getElementById("inputBox").value;
+      const chat = document.getElementById("chat");
+
+      chat.innerHTML += `<p><b>Você:</b> ${msg}</p>`;
+
+      const response = await fetch(
+        "https://erika-core-322004656162.us-central1.run.app/erika?q=" + encodeURIComponent(msg)
+      );
+      const data = await response.json();
+
+      chat.innerHTML += `<p><b>Erika:</b> ${data.erika_answer}</p>`;
+    }
+  </script>
+
+</body>
+</html>
